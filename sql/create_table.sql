@@ -53,7 +53,7 @@ create table if not exists question_submit
     id          bigint auto_increment comment 'id' primary key,
     language    varchar(128)                       not null comment '编程语言',
     code        text                               not null comment '用户代码',
-    judgeConfig text                               null comment '判题信息（Json 对象）',
+    judgeInfo text not null comment '判题信息（json对象）',
     status      int      default 0                 not null comment '判题状态',
     questionId  bigint                             not null comment '题目 id',
     userId      bigint                             not null comment '创建用户 id',

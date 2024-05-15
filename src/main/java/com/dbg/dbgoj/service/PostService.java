@@ -9,10 +9,7 @@ import com.dbg.dbgoj.model.vo.PostVO;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * 帖子服务
- *
- * @author <a href="https://github.com/lidbg">程序员鱼皮</a>
- * @from <a href="https://dbg.icu">编程导航知识星球</a>
+ * 题目服务
  */
 public interface PostService extends IService<Post> {
 
