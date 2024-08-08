@@ -19,10 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 帖子收藏服务实现
- *
- * @author <a href="https://github.com/lidbg">程序员鱼皮</a>
- * @from <a href="https://dbg.icu">编程导航知识星球</a>
+ * 帖子收藏服务实现 
  */
 @Service
 public class PostFavourServiceImpl extends ServiceImpl<PostFavourMapper, PostFavour>

@@ -6,10 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 帖子数据库操作
- *
- * @author <a href="https://github.com/lidbg">程序员鱼皮</a>
- * @from <a href="https://dbg.icu">编程导航知识星球</a>
+ * 帖子数据库操作 
  */
 public interface PostMapper extends BaseMapper<Post> {
 

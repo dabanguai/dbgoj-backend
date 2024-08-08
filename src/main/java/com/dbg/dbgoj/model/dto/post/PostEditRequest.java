@@ -5,10 +5,7 @@ import java.util.List;
 import lombok.Data;
 
 /**
- * 编辑请求
- *
- * @author <a href="https://github.com/lidbg">程序员鱼皮</a>
- * @from <a href="https://dbg.icu">编程导航知识星球</a>
+ * 编辑请求 
  */
 @Data
 public class PostEditRequest implements Serializable {

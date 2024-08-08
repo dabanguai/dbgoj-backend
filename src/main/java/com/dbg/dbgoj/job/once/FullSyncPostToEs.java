@@ -12,10 +12,7 @@ import cn.hutool.core.collection.CollUtil;
 import org.springframework.boot.CommandLineRunner;
 
 /**
- * 全量同步帖子到 es
- *
- * @author <a href="https://github.com/lidbg">程序员鱼皮</a>
- * @from <a href="https://dbg.icu">编程导航知识星球</a>
+ * 全量同步帖子到 es 
  */
 // todo 取消注释开启任务
 //@Component

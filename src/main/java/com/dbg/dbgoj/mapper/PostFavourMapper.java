@@ -10,10 +10,7 @@ import com.dbg.dbgoj.model.entity.PostFavour;
 import org.apache.ibatis.annotations.Param;
 
 /**
- * 帖子收藏数据库操作
- *
- * @author <a href="https://github.com/lidbg">程序员鱼皮</a>
- * @from <a href="https://dbg.icu">编程导航知识星球</a>
+ * 帖子收藏数据库操作 
  */
 public interface PostFavourMapper extends BaseMapper<PostFavour> {
 

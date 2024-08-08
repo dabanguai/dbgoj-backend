@@ -7,10 +7,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
 
 /**
- * Spring 上下文获取工具
- *
- * @author <a href="https://github.com/lidbg">程序员鱼皮</a>
- * @from <a href="https://dbg.icu">编程导航知识星球</a>
+ * Spring 上下文获取工具 
  */
 @Component
 public class SpringContextUtils implements ApplicationContextAware {

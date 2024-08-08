@@ -12,11 +12,16 @@ import com.dbg.dbgoj.exception.BusinessException;
 import com.dbg.dbgoj.exception.ThrowUtils;
 import com.dbg.dbgoj.model.dto.post.PostQueryRequest;
 import com.dbg.dbgoj.model.dto.question.*;
+import com.dbg.dbgoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
+import com.dbg.dbgoj.model.dto.questionsubmit.QuestionSubmitQueryRequest;
 import com.dbg.dbgoj.model.entity.Post;
 import com.dbg.dbgoj.model.entity.Question;
+import com.dbg.dbgoj.model.entity.QuestionSubmit;
 import com.dbg.dbgoj.model.entity.User;
+import com.dbg.dbgoj.model.vo.QuestionSubmitVO;
 import com.dbg.dbgoj.model.vo.QuestionVO;
 import com.dbg.dbgoj.service.QuestionService;
+import com.dbg.dbgoj.service.QuestionSubmitService;
 import com.dbg.dbgoj.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -28,9 +33,6 @@ import java.util.List;
 
 /**
  * 题目接口
- *
- * @author <a href="https://github.com/lidbg">程序员鱼皮</a>
- * @from <a href="https://dbg.icu">编程导航知识星球</a>
  */
 @RestController
 @RequestMapping("/question")
@@ -42,6 +44,9 @@ public class QuestionController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private QuestionSubmitService questionSubmitService;
 
     // region 增删改查
 
@@ -142,9 +147,30 @@ public class QuestionController {
         boolean result = questionService.updateById(question);
         return ResultUtils.success(result);
     }
-
     /**
      * 根据 id 获取
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/get")
+    public BaseResponse<Question> getQuestionById(long id, HttpServletRequest request) {
+        if (id <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        Question question = questionService.getById(id);
+        if (question == null) {
+            throw new BusinessException(ErrorCode.NOT_FOUND_ERROR);
+        }
+        User loginUser = userService.getLoginUser(request);
+        // 不是本人或管理员，不能直接获取所有信息
+        if (!question.getUserId().equals(loginUser.getId()) && !userService.isAdmin(loginUser)) {
+            throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
+        }
+        return ResultUtils.success(question);
+    }
+    /**
+     * 根据 id 获取(脱敏)
      *
      * @param id
      * @return
@@ -265,4 +291,41 @@ public class QuestionController {
     }
 
 
+
+    /**
+     * 提交题目
+     *
+     * @param questionSubmitAddRequest
+     * @param request
+     * @return 提交记录的 id
+     */
+    @PostMapping("/question_submit/do")
+    public BaseResponse<Long> doQuestionSubmit(@RequestBody QuestionSubmitAddRequest questionSubmitAddRequest,
+                                               HttpServletRequest request) {
+        if (questionSubmitAddRequest == null || questionSubmitAddRequest.getQuestionId() <= 0) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
+        }
+        // 登录才能点赞
+        final User loginUser = userService.getLoginUser(request);
+        long questionSubmitId = questionSubmitService.doQuestionSubmit(questionSubmitAddRequest, loginUser);
+        return ResultUtils.success(questionSubmitId);
+    }
+
+    /**
+     * 分页获取题目提交列表（除管理员外，普通用户只能看到非答案、提交代码等公开信息）
+     *
+     * @param questionSubmitQueryRequest
+     * @return
+     */
+    @PostMapping("/question_submit/list/page")
+    public BaseResponse<Page<QuestionSubmitVO>> listQuestionSubmitByPage(@RequestBody QuestionSubmitQueryRequest questionSubmitQueryRequest, HttpServletRequest request) {
+        long current = questionSubmitQueryRequest.getCurrent();
+        long size = questionSubmitQueryRequest.getPageSize();
+        // 从数据库中查询到原始的题目提交分页信息
+        Page<QuestionSubmit> questionSubmitPage = questionSubmitService.page(new Page<>(current, size),
+                questionSubmitService.getQueryWrapper(questionSubmitQueryRequest));
+        final User loginUser = userService.getLoginUser(request);
+        // 返回脱敏信息
+        return ResultUtils.success(questionSubmitService.getQuestionSubmitVOPage(questionSubmitPage, loginUser));
+    }
 }

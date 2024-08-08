@@ -5,10 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.dbg.dbgoj.model.entity.User;
 
 /**
- * 帖子点赞服务
- *
- * @author <a href="https://github.com/lidbg">程序员鱼皮</a>
- * @from <a href="https://dbg.icu">编程导航知识星球</a>
+ * 帖子点赞服务 
  */
 public interface PostThumbService extends IService<PostThumb> {
 

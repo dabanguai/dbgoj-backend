@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.dbg.dbgoj.common.ErrorCode;
 import com.dbg.dbgoj.constant.CommonConstant;
 import com.dbg.dbgoj.exception.BusinessException;
+import com.dbg.dbgoj.judge.JudgeService;
+import com.dbg.dbgoj.judge.strategy.JudgeManager;
 import com.dbg.dbgoj.mapper.QuestionSubmitMapper;
 import com.dbg.dbgoj.model.dto.question.QuestionQueryRequest;
 import com.dbg.dbgoj.model.dto.questionsubmit.QuestionSubmitAddRequest;
@@ -29,6 +31,7 @@ import com.dbg.dbgoj.utils.SqlUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +40,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -49,8 +53,12 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
 
     @Resource
     private QuestionService questionService;
+    @Resource
     private UserService userService;
 
+    @Resource
+    @Lazy
+    private JudgeService judgeService;
     /**
      * 提交题目
      *
@@ -81,13 +89,17 @@ public class QuestionSubmitServiceImpl extends ServiceImpl<QuestionSubmitMapper,
         questionSubmit.setCode(questionSubmitAddRequest.getCode());
         questionSubmit.setLanguage(language);
         // 设置初始状态
-        questionSubmit.setStatus(QuestionSubmitStatusEnum.WAITTING.getValue());
+        questionSubmit.setStatus(QuestionSubmitStatusEnum.WAITING.getValue());
         questionSubmit.setJudgeInfo("{}");
         boolean save = this.save(questionSubmit);
         if (!save) {
          throw new BusinessException(ErrorCode.SYSTEM_ERROR, "数据插入失败");
         }
         Long questionSubmitId = questionSubmit.getId();
+        // 执行判题服务
+        CompletableFuture.runAsync(() -> {
+            judgeService.doJudge(questionSubmitId);
+        });
         return questionSubmitId;
     }
 

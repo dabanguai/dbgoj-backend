@@ -6,10 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 权限校验
- *
- * @author <a href="https://github.com/lidbg">程序员鱼皮</a>
- * @from <a href="https://dbg.icu">编程导航知识星球</a>
+ * 权限校验 
  */
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)

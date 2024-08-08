@@ -16,10 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
 /**
- * 帖子 ES 操作测试
- *
- * @author <a href="https://github.com/lidbg">程序员鱼皮</a>
- * @from <a href="https://dbg.icu">编程导航知识星球</a>
+ * 帖子 ES 操作测试 
  */
 @SpringBootTest
 public class PostEsDaoTest {
